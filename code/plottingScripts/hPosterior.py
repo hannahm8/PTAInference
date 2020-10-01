@@ -41,7 +41,7 @@ def calculateH(posteriorSampes):
 
 # read in posterior samples
 
-runLoc = '../../runDir/nlive10000/'
+runLoc = '../../../../runDirs/run5/cpnest/'#'../../runDir/nlive10000/'
 data = np.genfromtxt('{0}posterior.dat'.format(runLoc),names=True)
 hout = open('{0}/hposterior.dat'.format(runLoc),'w')
 

@@ -8,7 +8,7 @@ matplotlib.rcParams.update({'font.size': 14})
 
 def histOutline(dataIn, *args, **kwargs):
     """
-﻿    code copied from http://www.scipy.org/Cookbook/Matplotlib/UnfilledHistograms?action=AttachFile&do=get&target=histNofill.py
+    code copied from http://www.scipy.org/Cookbook/Matplotlib/UnfilledHistograms?action=AttachFile&do=get&target=histNofill.py
 
     Make a histogram that can be plotted with plot() so that
     the histogram just has the outline rather than bars as it
@@ -51,15 +51,44 @@ def getPercentile(data,p):
 
 
 
-runLoc = '../../runDir/nlive10000/'
-data = np.genfromtxt('{0}posterior.dat'.format(runLoc),names=True)
-hData = np.genfromtxt('{}hposterior.dat'.format(runLoc))
+#runLoc = '../../runDir/nlive10000/'
+#data = np.genfromtxt('{0}posterior.dat'.format(runLoc),names=True)
+#hData = np.genfromtxt('{}hposterior.dat'.format(runLoc))
 # log no plot
+
+
+# how many runs did you do? 
+nRuns=5 
+for i in range(5):
+
+   runLoc = '../../../../runDirs/run{}/cpnest/'.format(int(i+1))
+   if i==0: 
+     data  = np.atleast_1d(np.genfromtxt('{0}posterior.dat'.format(runLoc),names=True))
+     hData = np.atleast_1d(np.genfromtxt('{0}hposterior.dat'.format(runLoc)))
+     print(np.shape(data),np.shape(hData))
+     length = np.shape(data)[0]
+   else: 
+     dataNew  = np.atleast_1d(np.genfromtxt('{0}posterior.dat'.format(runLoc),names=True))
+     hDataNew = np.atleast_1d(np.genfromtxt('{0}hposterior.dat'.format(runLoc)))
+     print(np.shape(dataNew),np.shape(hDataNew))
+
+     data  = np.concatenate((data,dataNew))
+     hData = np.concatenate((hData,hDataNew))
+
+     length+=np.shape(dataNew)[0]
+
+     print(np.shape(data),np.shape(hData))     
+
+print(data['logn'])
+print(hData)
+
 
 setBins = np.arange(int(min(data['logn'])), ceil(max(data['logn'])),0.5)
 
 p05 = getPercentile(data['logn'],5)
 p95 = getPercentile(data['logn'],95)
+p50 = getPercentile(data['logn'],50)
+
 
 (bins,dat) = histOutline(data['logn'],setBins)
 pylab.plot(bins,dat,'k-',linewidth=2,alpha=0.7)
@@ -75,8 +104,9 @@ pylab.show()
 
 print("""
 05%: {}
+50%: {}
 95%: {}
-""".format(p05,p95))
+""".format(p05,p50,p95))
 
 
 
