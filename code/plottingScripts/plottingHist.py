@@ -6,6 +6,12 @@ import matplotlib
 matplotlib.rcParams.update({'font.size': 14})
 
 
+import readPosterior
+
+
+
+
+
 def histOutline(dataIn, *args, **kwargs):
     """
     code copied from http://www.scipy.org/Cookbook/Matplotlib/UnfilledHistograms?action=AttachFile&do=get&target=histNofill.py
@@ -46,92 +52,77 @@ def histOutline(dataIn, *args, **kwargs):
 
 
 
-def getPercentile(data,p):
-    return np.percentile(data,p)
 
 
 
-#runLoc = '../../runDir/nlive10000/'
-#data = np.genfromtxt('{0}posterior.dat'.format(runLoc),names=True)
-#hData = np.genfromtxt('{}hposterior.dat'.format(runLoc))
-# log no plot
+def plotOneDPosterior(pathToRuns,nRuns,paramName,paramLabel):
+
+    plt.clf()
 
 
-# how many runs did you do? 
-nRuns=5 
-for i in range(5):
+    #pathToRuns = "../../runs/simpleModelPosteriors/"
+    data = readPosterior.readPosterior(pathToRuns, nRuns=nRuns)
 
-   runLoc = '../../../../runDirs/run{}/cpnest/'.format(int(i+1))
-   if i==0: 
-     data  = np.atleast_1d(np.genfromtxt('{0}posterior.dat'.format(runLoc),names=True))
-     hData = np.atleast_1d(np.genfromtxt('{0}hposterior.dat'.format(runLoc)))
-     print(np.shape(data),np.shape(hData))
-     length = np.shape(data)[0]
-   else: 
-     dataNew  = np.atleast_1d(np.genfromtxt('{0}posterior.dat'.format(runLoc),names=True))
-     hDataNew = np.atleast_1d(np.genfromtxt('{0}hposterior.dat'.format(runLoc)))
-     print(np.shape(dataNew),np.shape(hDataNew))
+    setBins = np.arange(int(min(data[paramName])), ceil(max(data[paramName])),0.5)
 
-     data  = np.concatenate((data,dataNew))
-     hData = np.concatenate((hData,hDataNew))
-
-     length+=np.shape(dataNew)[0]
-
-     print(np.shape(data),np.shape(hData))     
-
-print(data['logn'])
-print(hData)
+    p05 = np.percentile(data[paramName],5)
+    p50 = np.percentile(data[paramName],50)
+    p95 = np.percentile(data[paramName],95)
 
 
-setBins = np.arange(int(min(data['logn'])), ceil(max(data['logn'])),0.5)
-
-p05 = getPercentile(data['logn'],5)
-p95 = getPercentile(data['logn'],95)
-p50 = getPercentile(data['logn'],50)
-
-
-(bins,dat) = histOutline(data['logn'],setBins)
-pylab.plot(bins,dat,'k-',linewidth=2,alpha=0.7)
-plt.axvline(p05,ls=':',color='k')
-plt.axvline(p95,ls=':',color='k')
-plt.xlabel(r'$\log_{10}\frac{{\dot n}_0}{{\rm Mpc}^{-3}{\rm Gyr}}$')
-plt.ylabel('Number of counts')
-plt.tight_layout()
-plt.savefig('{}lognoHist.pdf'.format(runLoc))
-plt.savefig('{}lognoHist.png'.format(runLoc))
-pylab.show()
+    (bins,dat) = histOutline(data[paramName],setBins)
+    pylab.plot(bins,dat,'k-',linewidth=2,alpha=0.7)
+    plt.axvline(p05,ls=':',color='k')
+    plt.axvline(p95,ls=':',color='k')
+    plt.xlabel(paramLabel)
+    plt.ylabel('Number of counts')
+    plt.tight_layout()
+    #plt.savefig('{}lognoHist.pdf'.format(runLoc))
+    #plt.savefig('{}lognoHist.png'.format(runLoc))
+    pylab.show()
 
 
-print("""
-05%: {}
-50%: {}
-95%: {}
-""".format(p05,p50,p95))
+    print("""{}
+    05%: {}
+    50%: {}
+    95%: {}
+    """.format(paramName,p05,p50,p95))
+
+    return 0
 
 
 
-plt.clf()
 
-log10hData = np.log10(hData)
+def plotHDistribution(pathToH):
 
-ph05 = getPercentile(log10hData,5)
-ph95 = getPercentile(log10hData,95)
-print (10**ph05, 10**ph95)
+    plt.clf()
+
+    hData = np.genfromtxt(pathToH)
+    log10hData = np.log10(hData)
+
+    ph05 = np.percentile(log10hData,5)
+    ph50 = np.percentile(log10hData,50)
+    ph95 = np.percentile(log10hData,95)
+    print (10**ph05, 10**ph95)
 
 
-hSetBins = np.arange(int(min(log10hData)),ceil(max(log10hData)),0.05)
-#print(hSetBins)
-(hbins,hdat) = histOutline(log10hData,hSetBins)
-pylab.plot(hbins,hdat,'k-',linewidth=2,alpha=0.7)
-plt.xlim(-15.5,-14.2)
-plt.axvline(ph05,ls=':',color='k')
-plt.axvline(ph95,ls=':',color='k')
-plt.ylabel('Number of counts')
-plt.xlabel(r'$A_{\rm yr}$')
-plt.tight_layout()
-plt.savefig('{}hposterior.png'.format(runLoc))
-plt.savefig('{}hposterior.pdf'.format(runLoc))
-plt.show()
+    hSetBins = np.arange(int(min(log10hData)),ceil(max(log10hData)),0.05)
+    #print(hSetBins)
+    (hbins,hdat) = histOutline(log10hData,hSetBins)
+    pylab.plot(hbins,hdat,'k-',linewidth=2,alpha=0.7)
+    plt.xlim(-15.5,-14.2)
+    plt.axvline(ph05,ls=':',color='k')
+    plt.axvline(ph95,ls=':',color='k')
+    plt.axvline(ph50,ls="--",color='k')
+    plt.ylabel('Number of counts')
+    plt.xlabel(r'$A_{\rm yr}$')
+    plt.tight_layout()
+    #plt.savefig('{}hposterior.png'.format(runLoc))
+    #plt.savefig('{}hposterior.pdf'.format(runLoc))
+    plt.show()
+    
+
+    return 0
 
 
 
@@ -139,3 +130,24 @@ plt.show()
 
 
 
+
+
+def main():
+
+    parameterNames = (['logn','beta','gamma','alpha','delta'])
+    parameterLabels = ([r'$\log_{10}\frac{{\dot n}_0}{{\rm Mpc}^{-3}{\rm Gyr}}$',\
+                        r'$\beta$', r'$\gamma$FIX', r'$\alpha$', r'$\delta$FIX'])
+
+    path = '../../runs/simpleModelPosteriors/'
+    for pName, pLabel in zip(parameterNames, parameterLabels):
+        plotOneDPosterior(path,5,pName,pLabel)
+
+
+    plotHDistribution('../../runs/simpleModelPosteriors/combined/hposterior.dat')
+
+
+
+
+
+if __name__ == "__main__":
+    main()
