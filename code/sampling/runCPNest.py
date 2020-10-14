@@ -64,7 +64,7 @@ class NANOGravResult(cpnest.model.Model):
 
 
 mymodel = NANOGravResult()
-nest = cpnest.CPNest(mymodel,maxmcmc=1000,nlive=500,verbose=3)
+nest = cpnest.CPNest(mymodel,maxmcmc=1000,nlive=10000,verbose=3)
 nest.run()
 cpnest.CPNest.get_posterior_samples(nest)
 
