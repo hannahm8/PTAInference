@@ -46,7 +46,7 @@ def calculateH(posteriorSampes):
 def main():
 
     # read in posterior samples
-    pathToRuns = "../../runs/simpleModelPosteriors/"
+    pathToRuns = "../../runs/simpleModel/logNormLike/"
     data = readPosterior.readPosterior(pathToRuns, nRuns=5)
     #runLoc = '../../../../runDirs/run5/cpnest/'#'../../runDir/nlive10000/'
     #data = np.genfromtxt('{0}posterior.dat'.format(runLoc),names=True)
