@@ -44,12 +44,20 @@ class NANOGravResult(cpnest.model.Model):
         hModel = hModelCircular.hmodel(theta,\
                                          MlowIntLimit,MhighIntLimit,\
                                          zlowIntLimit,zhighIntLimit)
-        
+      
+        """ gaussian likelihood
         # scale h for likelihood
         hModelOver1EMinus15 = hModel/(1.E-15)
 
+
         # likelihood 
         log_like = -0.5 *( (hModelOver1EMinus15-hCentre)**2. ) / (hSigma*hSigma)
+        """
+
+        # log normal likelihood
+        log10HModel = np.log10(hModel)
+        log_like = -0.5 * ( ( log10HModel - 14.7 )**2. ) / ( 0.15 * 0.15 )
+
 
         return log_like
 
