@@ -55,7 +55,7 @@ class NANOGravResult(cpnest.model.Model):
         """
 
         # log normal likelihood
-        log10HModel = np.log10(hModel)
+        log10HModel = np.log10(float(hModel))
         log_like = -0.5 * ( ( log10HModel - 14.7 )**2. ) / ( 0.15 * 0.15 )
 
 
@@ -64,7 +64,7 @@ class NANOGravResult(cpnest.model.Model):
 
 
 mymodel = NANOGravResult()
-nest = cpnest.CPNest(mymodel,maxmcmc=1000,nlive=10000,verbose=3)
+nest = cpnest.CPNest(mymodel,maxmcmc=1000,nlive=500,verbose=3)
 nest.run()
 cpnest.CPNest.get_posterior_samples(nest)
 
