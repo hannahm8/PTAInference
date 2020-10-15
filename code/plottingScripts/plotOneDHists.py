@@ -63,7 +63,8 @@ def plotOneDPosterior(pathToRuns,nRuns,paramName,paramLabel):
     #pathToRuns = "../../runs/simpleModelPosteriors/"
     data = readPosterior.readPosterior(pathToRuns, nRuns=nRuns)
 
-    setBins = np.arange(int(min(data[paramName])), ceil(max(data[paramName])),0.5)
+    #setBins = np.arange(int(min(data[paramName])), ceil(max(data[paramName])),0.5)
+    setBins = np.linspace(min(data[paramName]), max(data[paramName]),50)
 
     p05 = np.percentile(data[paramName],5)
     p50 = np.percentile(data[paramName],50)
@@ -78,8 +79,8 @@ def plotOneDPosterior(pathToRuns,nRuns,paramName,paramLabel):
     plt.ylabel('Number of counts')
     plt.tight_layout()
     #plt.savefig('{}lognoHist.pdf'.format(runLoc))
-    #plt.savefig('{}lognoHist.png'.format(runLoc))
-    pylab.show()
+    plt.savefig('logno.png')
+    #pylab.show()
 
 
     print("""{}
@@ -103,23 +104,38 @@ def plotHDistribution(pathToH):
     ph05 = np.percentile(log10hData,5)
     ph50 = np.percentile(log10hData,50)
     ph95 = np.percentile(log10hData,95)
-    print (10**ph05, 10**ph95)
+    print ("""
+    05%: {}  ({})
+    50%: {}  ({})
+    95%: {}  ({})
+    """.format(10**ph05, ph05, 10**ph50, ph50, 10**ph95, ph95))
 
 
     hSetBins = np.arange(int(min(log10hData)),ceil(max(log10hData)),0.05)
     #print(hSetBins)
     (hbins,hdat) = histOutline(log10hData,hSetBins)
     pylab.plot(hbins,hdat,'k-',linewidth=2,alpha=0.7)
-    plt.xlim(-15.5,-14.2)
+    #plt.xlim(-15.5,-14.2)
+    #plt.xlim(-15.2,-13.5)
     plt.axvline(ph05,ls=':',color='k')
     plt.axvline(ph95,ls=':',color='k')
     plt.axvline(ph50,ls="--",color='k')
     plt.ylabel('Number of counts')
     plt.xlabel(r'$A_{\rm yr}$')
+
+
+    # Nanograv numbers
+    plt.axvline(np.log10(1.37E-15),color='#ffa500')
+    #plt.axvlines(np.log10(1.37E-15),color='#ffa500')
+    plt.axvline(np.log10(2.67E-15),color='#ffa500')
+
+
+
     plt.tight_layout()
     #plt.savefig('{}hposterior.png'.format(runLoc))
     #plt.savefig('{}hposterior.pdf'.format(runLoc))
-    plt.show()
+    plt.savefig('hposterior.png')
+    #plt.show()
     
 
     return 0
@@ -138,12 +154,14 @@ def main():
     parameterLabels = ([r'$\log_{10}\frac{{\dot n}_0}{{\rm Mpc}^{-3}{\rm Gyr}}$',\
                         r'$\beta$', r'$\gamma$FIX', r'$\alpha$', r'$\delta$FIX'])
 
-    path = '../../runs/simpleModelPosteriors/'
+
+    path = ''
     for pName, pLabel in zip(parameterNames, parameterLabels):
         plotOneDPosterior(path,5,pName,pLabel)
+        break
 
 
-    plotHDistribution('../../runs/simpleModelPosteriors/combined/hposterior.dat')
+    plotHDistribution('./hposterior.dat')
 
 
 
