@@ -55,31 +55,29 @@ def histOutline(dataIn, *args, **kwargs):
 
 
 
-def plotOneDPosterior(pathToRuns,nRuns,paramName,paramLabel):
-
-    plt.clf()
-
+def plotOneDPosterior(data,paramLabel,colour='k-',label=''):
 
     #pathToRuns = "../../runs/simpleModelPosteriors/"
-    data = readPosterior.readPosterior(pathToRuns, nRuns=nRuns)
+    
 
     #setBins = np.arange(int(min(data[paramName])), ceil(max(data[paramName])),0.5)
-    setBins = np.linspace(min(data[paramName]), max(data[paramName]),50)
+    #setBins = np.linspace(min(data[paramName]), max(data[paramName]),50)
+    setBins = np.linspace(-15,3,50)
 
-    p05 = np.percentile(data[paramName],5)
-    p50 = np.percentile(data[paramName],50)
-    p95 = np.percentile(data[paramName],95)
+    p05 = np.percentile(data,5)
+    p50 = np.percentile(data,50)
+    p95 = np.percentile(data,95)
 
 
-    (bins,dat) = histOutline(data[paramName],setBins)
-    pylab.plot(bins,dat,'k-',linewidth=2,alpha=0.7)
+    (bins,dat) = histOutline(data,setBins,normed=1)
+    pylab.plot(bins,dat,colour,linewidth=2,alpha=0.7,label=label)
     plt.axvline(p05,ls=':',color='k')
     plt.axvline(p95,ls=':',color='k')
     plt.xlabel(paramLabel)
-    plt.ylabel('Number of counts')
+    plt.ylabel('Normalised counts')
     plt.tight_layout()
     #plt.savefig('{}lognoHist.pdf'.format(runLoc))
-    plt.savefig('logno.png')
+    #plt.savefig('logno.png')
     #pylab.show()
 
 
@@ -87,7 +85,7 @@ def plotOneDPosterior(pathToRuns,nRuns,paramName,paramLabel):
     05%: {}
     50%: {}
     95%: {}
-    """.format(paramName,p05,p50,p95))
+    """.format(paramLabel,p05,p50,p95))
 
     return 0
 
@@ -155,7 +153,39 @@ def main():
                         r'$\beta$', r'$\gamma$FIX', r'$\alpha$', r'$\delta$FIX'])
 
 
-    path = ''
+    # one d histograms of three runs
+    pathToRuns = '../../runs/simpleModel/logNormLike/'
+    nRuns=5
+    simpleModelData = readPosterior.readPosterior(pathToRuns, nRuns=nRuns)
+    plotOneDPosterior(simpleModelData['logn'],
+                      parameterLabels[0],
+                      colour='#d95f02',
+                      label='Simple model')
+
+    pathToRuns = '../../runs/galaxyModel/n_eff.dat'
+    galaxyModel = np.genfromtxt(pathToRuns)
+    plotOneDPosterior(galaxyModel,
+                      parameterLabels[0],
+                      colour='#1b9e77',
+                      label='Galaxy model')
+
+    
+    pathToRuns = '../../runs/galaxyModel_ext/n_eff.dat'
+    galaxyModelExt = np.genfromtxt(pathToRuns)
+    plotOneDPosterior(galaxyModelExt,
+                      parameterLabels[0],
+                      colour='#7570b3',
+                      label='Galaxy model ext.')
+    
+    plt.legend()
+    plt.savefig('overplotted_logn.png')
+    plt.show()
+
+    
+    print(simpleModelData)
+    exit()
+    # not used at the moment 
+    path = '../'
     for pName, pLabel in zip(parameterNames, parameterLabels):
         plotOneDPosterior(path,5,pName,pLabel)
         break
