@@ -1,8 +1,8 @@
 import numpy as np
 from scipy.integrate import quad
+import matplotlib.pyplot as plt
 
-
-def findSigma(low,high,sigmas):
+def findSigma(low,high,sigmas,mu):
 
     diffLow,diffHigh=10.,10.
     ratioLow,ratioHigh=100,100
@@ -51,34 +51,83 @@ def Gaussian(x,mu,sigma):
 
 
 
-# 5-95% from NANOGrav result
-low  = 1.37
-high = 2.67
-mu = (low + high)/2.
-
-# sigma range
-sigmas = np.arange(0.01,.5,0.0001)
 
 
-sigmaResult = findSigma(low,high,sigmas)
+def getGaussianLikeParams():
 
-print('sigma is ',sigmaResult)
+    #######################
+    # Gaussian likelihood #       
+    #######################
+
+    # 5-95% from NANOGrav result
+    low  = 1.37
+    high = 2.67
+    mu = (low + high)/2.
+
+    # sigma range
+    sigmas = np.arange(0.01,.5,0.0001)
+
+
+    sigmaResult = findSigma(low,high,sigmas,mu)
+
+    print('sigma is ',sigmaResult)
 
 
 
-# plot results 
+    # plot results 
+    xs=np.arange(low*0.1,high*2.,0.01)
+    x = np.atleast_1d([np.log10(xi*1E-15) for xi in xs])
+    y=Gaussian(xs,mu,sigmaResult)
 
-import matplotlib.pyplot as plt
+    plt.clf()
+    plt.axvline(np.log10(low*1E-15))
+    plt.axvline(np.log10(high*1E-15))
+    plt.plot(x,y)
+    plt.show()
 
-xs=np.arange(low*0.1,high*2.,0.01)
-x = np.atleast_1d([np.log10(xi*1E-15) for xi in xs])
-y=Gaussian(xs,mu,sigmaResult)
 
-plt.clf()
-plt.axvline(np.log10(low*1E-15))
-plt.axvline(np.log10(high*1E-15))
-plt.plot(x,y)
-plt.show()
+    return None
+
+
+
+
+
+def getLogNormLikeParams():
+
+
+    low  = np.log10(1.37E-15)
+    high = np.log10(2.67E-15)
+    mu = (low+high)/2.
+
+    print(low,high,mu)
+
+    sigmas = np.arange(0.01,0.5,0.0001)
+   
+    sigmaResult = findSigma(low,high,sigmas,mu)
+
+    print('sigma is ', sigmaResult )
+
+    xs=np.arange(low-0.1,high+0.1,0.0001)
+    print(xs)
+    y=Gaussian(xs,mu,sigmaResult)
+    print (y)
+
+    plt.clf()
+    plt.axvline(low)
+    plt.axvline((high))
+    plt.plot(xs,y)
+    plt.show()
+
+
+
+    return None
+
+
+
+
+
+getLogNormLikeParams()
+
 
 
     
