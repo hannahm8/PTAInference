@@ -85,10 +85,10 @@ def plotOneDPosterior(data,paramLabel,setBins,colour='k-',label='',prior=False):
 
 
     print("""{}
-    05%: {}
-    50%: {}
-    95%: {}
-    """.format(paramLabel,p05,p50,p95))
+    05%: {} ({})
+    50%: {} ({})
+    95%: {} ({})
+    """.format(paramLabel,p05,10**p05,p50,10.**p50,p95,10.**p95))
 
     return 0
 
@@ -192,17 +192,17 @@ def main():
 
     # this one!
     pathToRuns = '../../runs/simpleModel/logNormLikeMstar6to10/'
+    print(pathToRuns)
     nRuns=5
     simpleModelData = readPosterior.readPosterior(pathToRuns, nRuns=nRuns)
     low  = int(min(simpleModelData['logn']))
     high = ceil(max(simpleModelData['logn']))
     bins = np.linspace(low,high,80)
-    print(bins)
     plotOneDPosterior(simpleModelData['logn'],
                       parameterLabels[0],
                       setBins=bins,
                       colour=colSimp,
-                      label=r'Midd16 posterior')
+                      label=r'M16 posterior')
 
     
     """ 
@@ -218,22 +218,24 @@ def main():
     """
 
     pathToRuns = '../../runs/galaxyModel_ext/n_eff.dat'
+    print(pathToRuns)
     galaxyModelExt = np.genfromtxt(pathToRuns)
     plotOneDPosterior(galaxyModelExt,
                       parameterLabels[0],
                       setBins=bins,
                       colour=colGalExt,
-                      label=r'Chen19 posterior')
+                      label=r'C19 posterior')
 
 
     
     pathToRuns = '../../runs/galaxyModel_ext/n_effprior.dat'
+    print(pathToRuns)
     galaxyModelExt = np.genfromtxt(pathToRuns)
     plotOneDPosterior(galaxyModelExt,
                       parameterLabels[0],
                       setBins=bins,
                       colour=colGalExt,
-                      label=r'Chen19 prior',
+                      label=r'C19 prior',
                       prior=True)
 
     
@@ -263,7 +265,7 @@ def main():
 
 
     
-    plt.legend(fontsize=12)
+    plt.legend(fontsize=15,loc=2)
     plt.xlim(-12.,1.5)
     plt.savefig('combinedAnalysisPlots/lognComparison.pdf',dpi=300)
     plt.show()
