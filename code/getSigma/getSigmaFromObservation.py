@@ -1,3 +1,8 @@
+"""
+Estimates a mu / sigma given a 5%-95% confidence region
+"""
+
+
 import numpy as np
 from scipy.integrate import quad
 import matplotlib.pyplot as plt
@@ -51,17 +56,17 @@ def Gaussian(x,mu,sigma):
 
 
 
-
-
-def getGaussianLikeParams():
+# unused - using logNorm for better fit
+"""
+def getGaussianLikeParams(low,high):
 
     #######################
     # Gaussian likelihood #       
     #######################
 
     # 5-95% from NANOGrav result
-    low  = 1.37
-    high = 2.67
+    #low  = 1.37
+    #high = 2.67
     mu = (low + high)/2.
 
     # sigma range
@@ -71,8 +76,6 @@ def getGaussianLikeParams():
     sigmaResult = findSigma(low,high,sigmas,mu)
 
     print('sigma is ',sigmaResult)
-
-
 
     # plot results 
     xs=np.arange(low*0.1,high*2.,0.01)
@@ -87,16 +90,16 @@ def getGaussianLikeParams():
 
 
     return None
+"""
 
 
 
 
+def getLogNormLikeParams(lowIn,highIn):
 
-def getLogNormLikeParams():
 
-
-    low  = np.log10(1.37E-15)
-    high = np.log10(2.67E-15)
+    low  = np.log10(lowIn*(10.**-15))
+    high = np.log10(highIn*(10.**-15))
     mu = (low+high)/2.
 
     print(low,high,mu)
@@ -116,18 +119,19 @@ def getLogNormLikeParams():
     plt.axvline(low)
     plt.axvline((high))
     plt.plot(xs,y)
-    plt.show()
+    
 
 
 
     return None
 
 
+lowNANOGrav = 1.37
+highNANOGrav = 2.67
 
+getLogNormLikeParams(lowNANOGrav,highNANOGrav)
 
-
-getLogNormLikeParams()
-
+plt.show()
 
 
     
