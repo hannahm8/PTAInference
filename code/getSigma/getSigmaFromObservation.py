@@ -40,7 +40,6 @@ def findSigma(low,high,sigmas,mu):
            ratioLow>(frac-tol)  and \
            ratioHigh>(frac-tol):
             if abs(ratioLow-0.05)<diffLow or abs(ratioHigh-0.05)<diffHigh:
-                #print(sig,ratioLow, ratioHigh)
                 sigSave = sig
     return sigSave
 
@@ -56,7 +55,7 @@ def Gaussian(x,mu,sigma):
 
 
 
-# unused - using logNorm for better fit
+# unused - now using logNorm for better fit
 """
 def getGaussianLikeParams(low,high):
 
@@ -95,14 +94,15 @@ def getGaussianLikeParams(low,high):
 
 
 
-def getLogNormLikeParams(lowIn,highIn):
+def getLogNormLikeParams(lowIn,highIn,label=''):
 
 
     low  = np.log10(lowIn*(10.**-15))
     high = np.log10(highIn*(10.**-15))
     mu = (low+high)/2.
 
-    print(low,high,mu)
+    #print(low,high,mu)
+    print("mu is ", mu )
 
     sigmas = np.arange(0.01,0.5,0.0001)
    
@@ -115,10 +115,9 @@ def getLogNormLikeParams(lowIn,highIn):
     y=Gaussian(xs,mu,sigmaResult)
     print (y)
 
-    plt.clf()
     plt.axvline(low)
     plt.axvline((high))
-    plt.plot(xs,y)
+    plt.plot(xs,y,label=label)
     
 
 
@@ -126,11 +125,24 @@ def getLogNormLikeParams(lowIn,highIn):
     return None
 
 
+
+
+plt.clf()
+
 lowNANOGrav = 1.37
 highNANOGrav = 2.67
 
-getLogNormLikeParams(lowNANOGrav,highNANOGrav)
+getLogNormLikeParams(lowNANOGrav,highNANOGrav,label='N')
 
+
+lowPPTA = 2.2-0.3
+highPPTA = 2.2+0.4
+
+getLogNormLikeParams(lowPPTA,highPPTA,label='P')
+
+
+
+plt.legend()
 plt.show()
 
 
