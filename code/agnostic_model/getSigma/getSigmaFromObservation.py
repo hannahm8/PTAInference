@@ -1,5 +1,8 @@
 """
-Estimates a mu / sigma given a 5%-95% confidence region
+Estimates a mu / sigma given a 5%-95% confidence region. 
+The values are used to estimate a Gaussian distribution 
+which is consistent with the NANOGrav 12.5 yr observation 
+at 1/1yr. 
 """
 
 
