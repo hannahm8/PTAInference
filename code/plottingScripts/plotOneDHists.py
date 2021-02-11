@@ -1,3 +1,7 @@
+"""
+Plot one dimensional posteriors. Used to make figure 2 of paper. 
+"""
+
 from matplotlib import pylab
 import numpy as np
 from math import ceil
@@ -7,9 +11,6 @@ matplotlib.rcParams.update({'font.size': 15})
 
 
 import readPosterior
-
-
-
 
 
 def histOutline(dataIn, *args, **kwargs):
@@ -52,14 +53,9 @@ def histOutline(dataIn, *args, **kwargs):
 
 
 
-
-
-
 def plotOneDPosterior(data,paramLabel,setBins,colour='k-',label='',prior=False):
 
     #pathToRuns = "../../runs/simpleModelPosteriors/"
-    
-
     #setBins = np.arange(int(min(data[paramName])), ceil(max(data[paramName])),0.5)
     #setBins = np.linspace(min(data[paramName]), max(data[paramName]),50)
     #setBins = np.linspace(-14.5,2.5,50)
@@ -94,7 +90,7 @@ def plotOneDPosterior(data,paramLabel,setBins,colour='k-',label='',prior=False):
 
 
 
-
+# used to compare h from posterior to observation. 
 def plotHDistribution(pathToH):
 
     plt.clf()
@@ -113,11 +109,8 @@ def plotHDistribution(pathToH):
 
 
     hSetBins = np.arange(int(min(log10hData)),ceil(max(log10hData)),0.05)
-    #print(hSetBins)
     (hbins,hdat) = histOutline(log10hData,hSetBins)
     pylab.plot(hbins,hdat,'k-',linewidth=2,alpha=0.7)
-    #plt.xlim(-15.5,-14.2)
-    #plt.xlim(-15.2,-13.5)
     plt.axvline(ph05,ls=':',color='k')
     plt.axvline(ph95,ls=':',color='k')
     plt.axvline(ph50,ls="--",color='k')
@@ -135,16 +128,10 @@ def plotHDistribution(pathToH):
     plt.tight_layout()
     #plt.savefig('{}hposterior.png'.format(runLoc))
     #plt.savefig('{}hposterior.pdf'.format(runLoc))
-    plt.savefig('hposterior.png')
+    #plt.savefig('hposterior.png')
     #plt.show()
-    
-
+   
     return 0
-
-
-
-
-
 
 
 
@@ -166,32 +153,9 @@ def main():
     colGal = 'k'
     colSimpNegAlpha = red
 
-    """
-    # one d histograms of three runs
-    pathToRuns = '../../runs/simpleModel/logNormLike/'
-    nRuns=5
-    simpleModelData = readPosterior.readPosterior(pathToRuns, nRuns=nRuns)
-    plotOneDPosterior(simpleModelData['logn'],
-                      parameterLabels[0],
-                      colour=colSimp,
-                      label='Simple model')
-    """
-    """
-    # negative alpha run
-    pathToRuns = '../../runs/simpleModel/logNormLikeNegativeAlpha/'
-    nRuns=5
-    simpleModelData = readPosterior.readPosterior(pathToRuns, nRuns=nRuns)
-    plotOneDPosterior(simpleModelData['logn'],
-                      parameterLabels[0],
-                      colour=colSimpNegAlpha,
-                      label=r'Simple model $\alpha<0$')
 
-    """
-
-
-
-    # this one!
-    pathToRuns = '../../runs/simpleModel/logNormLikeMstar6to10/'
+    # this one was used in the paper
+    pathToRuns = '../../runs/agnosticModel/logNormLikeMstar6to10/'
     print(pathToRuns)
     nRuns=5
     simpleModelData = readPosterior.readPosterior(pathToRuns, nRuns=nRuns)
@@ -204,18 +168,43 @@ def main():
                       colour=colSimp,
                       label=r'M16 posterior')
 
-    
-    """ 
-    # negative alpha run
-    pathToRuns = '../../runs/simpleModel/logNormLikeNegAlphaMstar6to10/'
-    nRuns=5
-    simpleModelData = readPosterior.readPosterior(pathToRuns, nRuns=nRuns)
-    plotOneDPosterior(simpleModelData['logn'],
-                      parameterLabels[0],
-                      colour=purple,
-                      label=r'Simple model $\alpha<0$ and $6<\log_{10}\mathcal{M}_*/M_{\odot}<10$')
+    plotAdditionalAgnosticVariations = False
+    plotAdditionalGalaxyVariations = False
 
-    """
+    if plotAdditionalAgnosticVariations == True: 
+     
+        # negative alpha run
+        pathToRuns = '../../runs/agnosticModel/logNormLikeNegativeAlphaMstar6to10/'
+        nRuns=5
+        simpleModelData = readPosterior.readPosterior(pathToRuns, nRuns=nRuns)
+        plotOneDPosterior(simpleModelData['logn'],
+                          parameterLabels[0],
+                          setBins=bins,
+                          colour=purple,
+                          label=r'M16 $\alpha<0$, $6<\log_{10}\mathcal{M}_*/M_{\odot}<10$')
+
+
+        """
+        pathToRuns = '../../runs/agnosticModel/logNormLike/'
+        nRuns=5
+        simpleModelData = readPosterior.readPosterior(pathToRuns, nRuns=nRuns)
+        plotOneDPosterior(simpleModelData['logn'],
+                          parameterLabels[0],
+                          setBins=bins,
+                          colour=colSimp,
+                          label='Simple model')
+        """
+        
+        pathToRuns = '../../runs/agnosticModel/logNormLikeNegativeAlpha/'
+        nRuns=5
+        simpleModelData = readPosterior.readPosterior(pathToRuns, nRuns=nRuns)
+        plotOneDPosterior(simpleModelData['logn'],
+                          parameterLabels[0],
+                          setBins=bins,
+                          colour=colSimpNegAlpha,
+                          label=r'M16 $\alpha<0$')
+    else:pass 
+
 
     pathToRuns = '../../runs/galaxyModel_ext/n_eff.dat'
     print(pathToRuns)
@@ -241,49 +230,30 @@ def main():
     
 
 
-
-    """
-    # prior 
-    pathToRuns = '../../runs/galaxyModel/n_effprior.dat'
-    galaxyModel = np.genfromtxt(pathToRuns)
-    plotOneDPosterior(galaxyModel,
-                      parameterLabels[0],
-                      colour=colGal,
-                      label='Galaxy model prior',
-                      prior=True)
-
-
-    pathToRuns = '../../runs/galaxyModel/n_eff.dat'
-    galaxyModel = np.genfromtxt(pathToRuns)
-    plotOneDPosterior(galaxyModel,
-                      parameterLabels[0],
-                      colour=colGal,
-                      label='Galaxy model')
+    if plotAdditionalGalaxyVariations==True:
+        pathToRuns = '../../runs/galaxyModel/n_effprior.dat'
+        galaxyModel = np.genfromtxt(pathToRuns)
+        plotOneDPosterior(galaxyModel,
+                          parameterLabels[0],
+                          setBins=bins,
+                          colour=colGal,
+                          label='C19 (non-ext) prior',
+                          prior=True)
 
 
-    """
+        pathToRuns = '../../runs/galaxyModel/n_eff.dat'
+        galaxyModel = np.genfromtxt(pathToRuns)
+        plotOneDPosterior(galaxyModel,
+                          parameterLabels[0],
+                          setBins=bins,
+                          colour=colGal,
+                          label='C19 (non-ext)')
+    else:pass
 
-
-    
     plt.legend(fontsize=15,loc=2)
     plt.xlim(-12.,1.5)
-    plt.savefig('combinedAnalysisPlots/lognComparison.pdf',dpi=300)
+    #plt.savefig('combinedAnalysisPlots/lognComparison.pdf',dpi=300)
     plt.show()
-
-    """
-    print(simpleModelData)
-    exit()
-    # not used at the moment 
-    path = '../'
-    for pName, pLabel in zip(parameterNames, parameterLabels):
-        plotOneDPosterior(path,5,pName,pLabel)
-        break
-
-
-    plotHDistribution('./hposterior.dat')
-
-    """
-
 
 
 if __name__ == "__main__":

@@ -1,3 +1,8 @@
+""" 
+plot distribution in chirp mass
+used to make fugure 3 in paper
+"""
+
 import numpy as np
 
 import matplotlib.pyplot as plt
@@ -24,7 +29,7 @@ colSimp=orange
 colGalExt=green
 colGal = 'k'
 
-simpModRunLoc = '../../runs/simpleModel/logNormLikeMstar6to10/'
+simpModRunLoc = '../../runs/agnosticModel/logNormLikeMstar6to10/'
 simpModData = np.genfromtxt('{}combined/mLines.dat'.format(simpModRunLoc))
 simpModMs   = np.genfromtxt('{}combined/ms.dat'.format(simpModRunLoc))
 
@@ -81,6 +86,5 @@ plt.xscale('log')
 plt.xlabel(r'$\mathcal{M}~~({\rm M_{\odot}})$')
 plt.ylabel(r'${\rm d}n / {\rm d} \log_{10} \mathcal{M}/{\rm M_{\odot}}~~({\rm Mpc}^{-3})$')
 plt.tight_layout()
-plt.savefig('combinedAnalysisPlots/dndlogM.pdf'.format(simpModRunLoc))
-plt.savefig('combinedAnalysisPlots/dndlogM.png'.format(simpModRunLoc))
+plt.savefig('dndlogM.pdf')
 plt.show()
