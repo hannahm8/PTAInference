@@ -1,5 +1,14 @@
-run from OzSTAR in directory: 
+### Run details
 
-/fred/oz022/hm_pta/runDirs/logNormalHLike/mu14p7_sig09p9
+Log Norm likelihood
+
+Priors: 
+    logno = [-20.0,3.0]
+    beta  = [-2.0,7.0]
+    gamma = [0.2,5.0]
+    alpha = [-3.0,3.0]
+    delta = [-1.0,2.0]
 
 
+For reference: run directory is on OzSTAR in directory: 
+    /fred/oz022/hm_pta/runDirs/logNormalHLike/mu-14p7_sig09p9

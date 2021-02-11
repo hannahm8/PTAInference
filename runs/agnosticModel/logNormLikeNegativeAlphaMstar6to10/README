@@ -1,0 +1,15 @@
+### Run details
+
+Log Norm likelihood
+
+Priors: 
+    logno = [-20.0,3.0]
+    beta  = [-2.0,7.0]
+    gamma = [0.2,5.0]
+    alpha = [-3.0,0.0]
+    delta = [-1.0,3.0]
+(restricted prior allowing only negative alpha)
+
+
+For reference: run directory is on OzSTAR in directory: 
+    /fred/oz022/hm_pta/runDirs/logNormalHLike/mu-14p7_sig0p09_negativeAlpha_delta6to10/

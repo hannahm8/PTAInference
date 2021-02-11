@@ -1,1 +1,3 @@
-Folder contains five cpnest runs which were combined to make the plots in in the document
+Folder contains five cpnest runs which were combined to make the plots in in the document. 
+
+This run uses a Gaussian likelihood. This is not used in the final analysis as the logNorm likelihood was found to produce a better match to the observational. result. 
