@@ -10,12 +10,13 @@ import numpy as np
 from scipy.integrate import quad
 import matplotlib.pyplot as plt
 
-def findSigma(low,high,sigmas,mu):
+def findSigma(low,high,sigmas,mu,credibleRange):
 
     diffLow,diffHigh=10.,10.
     ratioLow,ratioHigh=100,100
     
-    frac=0.05
+    frac=0.5*(100.-credibleRange)/100. #0.05
+    print(frac)
     tol = 0.01
 
     lowerLimit = low-10.
@@ -97,7 +98,7 @@ def getGaussianLikeParams(low,high):
 
 
 
-def getLogNormLikeParams(lowIn,highIn,label=''):
+def getLogNormLikeParams(lowIn,highIn,CR,label=''):
 
 
     low  = np.log10(lowIn*(10.**-15))
@@ -109,7 +110,7 @@ def getLogNormLikeParams(lowIn,highIn,label=''):
 
     sigmas = np.arange(0.01,0.5,0.0001)
    
-    sigmaResult = findSigma(low,high,sigmas,mu)
+    sigmaResult = findSigma(low,high,sigmas,mu,CR)
 
     print('sigma is ', sigmaResult )
 
@@ -135,13 +136,13 @@ plt.clf()
 lowNANOGrav = 1.37
 highNANOGrav = 2.67
 
-getLogNormLikeParams(lowNANOGrav,highNANOGrav,label='N')
+getLogNormLikeParams(lowNANOGrav,highNANOGrav,90,label='N')
 
 
 lowPPTA = 2.2-0.3
 highPPTA = 2.2+0.4
 
-getLogNormLikeParams(lowPPTA,highPPTA,label='P')
+getLogNormLikeParams(lowPPTA,highPPTA,68,label='P')
 
 
 
