@@ -16,8 +16,8 @@ def findSigma(low,high,sigmas,mu,credibleRange):
     ratioLow,ratioHigh=100,100
     
     frac=0.5*(100.-credibleRange)/100. #0.05
-    print(frac)
-    tol = 0.01
+    print('frac: ', frac)
+    tol = 0.001
 
     lowerLimit = low-10.
     upperLimit = high+10
@@ -43,7 +43,7 @@ def findSigma(low,high,sigmas,mu,credibleRange):
            ratioHigh<(frac+tol) and \
            ratioLow>(frac-tol)  and \
            ratioHigh>(frac-tol):
-            if abs(ratioLow-0.05)<diffLow or abs(ratioHigh-0.05)<diffHigh:
+            if abs(ratioLow-frac)<diffLow and abs(ratioHigh-frac)<diffHigh:
                 sigSave = sig
     return sigSave
 
@@ -115,35 +115,58 @@ def getLogNormLikeParams(lowIn,highIn,CR,label=''):
     print('sigma is ', sigmaResult )
 
     xs=np.arange(low-0.1,high+0.1,0.0001)
-    print(xs)
+    #print(xs)
     y=Gaussian(xs,mu,sigmaResult)
-    print (y)
+    #print (y)
 
-    plt.axvline(low)
-    plt.axvline((high))
+    plt.axvline(low,alpha=0.5)
+    plt.axvline(high,alpha=0.5)
     plt.plot(xs,y,label=label)
     
 
 
 
-    return None
+    return mu,sigmaResult
 
 
 
 
 plt.clf()
 
+print('\n\nNANOGrav')
 lowNANOGrav = 1.37
 highNANOGrav = 2.67
 
-getLogNormLikeParams(lowNANOGrav,highNANOGrav,90,label='N')
+m,s = getLogNormLikeParams(lowNANOGrav,highNANOGrav,90,label='N')
+plt.scatter([m-s,m+s],[0.5,0.5],marker='x')
+print(highNANOGrav-lowNANOGrav,m+s-(m-s))
 
 
+print('\n\nPPTA')
 lowPPTA = 2.2-0.3
 highPPTA = 2.2+0.4
 
-getLogNormLikeParams(lowPPTA,highPPTA,68,label='P')
+m,s = getLogNormLikeParams(lowPPTA,highPPTA,68,label='P')
+plt.scatter([m-s,m+s],[0.5,0.5],marker='x')
+print(highPPTA-lowPPTA,m+s-(m-s))
 
+
+print('\n\nIPTA')
+lowIPTA  = 2.8-0.8
+highIPTA = 2.8+1.2
+
+m,s = getLogNormLikeParams(lowIPTA,highIPTA,95,label='I')
+plt.scatter([m-s,m+s],[0.5,0.5],marker='x')
+print(highIPTA-lowIPTA,m+s-(m-s))
+
+
+print('\n\nEPTA')
+lowEPTA  = 2.95-0.72
+highEPTA = 2.95+0.89
+
+m,s = getLogNormLikeParams(lowEPTA,highEPTA,95,label='E')
+plt.scatter([m-s,m+s],[0.5,0.5],marker='x')
+print(highEPTA-lowEPTA,m+s-(m-s))
 
 
 plt.legend()
