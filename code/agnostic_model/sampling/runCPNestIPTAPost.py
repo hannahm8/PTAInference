@@ -33,7 +33,7 @@ def getKDE(sampleFile):
     burnIn = int(0.25*count)    
     
     # read in the lines and get the posterior samples for A
-    for i in range(lenData):
+    for i in range(count):
         line  = f.readline().split()
         A[i] = line[215]
      
@@ -76,9 +76,12 @@ class IPTAResult(cpnest.model.Model):
         return log_like
 
 
-
-posteriorFile = '/home/hannahm/Documents/PTA/IPTADR2Chains/iptadr2-fix_gamma_HD/chain_fg_HD.txt'
-kdeForIPTA = getKDE(posteriorFile)
+try: 
+    posteriorFile = '/home/hannahm/Documents/PTA/IPTADR2Chains/iptadr2-fix_gamma_HD/chain_fg_HD.txt'
+    kdeForIPTA = getKDE(posteriorFile)
+except: 
+    posteriorFile = '/fred/oz022/hm_pta/runDirs/iptaLike/data/iptadr2-fix_gamma_HD/chain_fg_HD.txt'
+    kdeForIPTA = getKDE(posteriorFile)
 
 
 mymodel = IPTAResult()
