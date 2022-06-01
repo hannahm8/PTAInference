@@ -28,9 +28,12 @@ def getKDE(sampleFile):
             if line.strip():
                 count += 1
        
-    # then open the file again to read in the data
+
     A = np.zeros(count)
     burnIn = int(0.25*count)    
+    
+    # then open the file again to read in the data
+    f = open(sampleFile, "r")
     
     # read in the lines and get the posterior samples for A
     for i in range(lenData):
