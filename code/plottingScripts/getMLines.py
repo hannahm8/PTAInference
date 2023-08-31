@@ -9,7 +9,7 @@ def zInt(beta,gamma,zlow,zhigh):
     OmegaL = 0.7
     Ho = 1.0/13.8
 
-    zfn = lambda zi: ( (1.0 + zi)**(beta-1.0) * np.exp(zi/gamma) ) / \
+    zfn = lambda zi: ( (1.0 + zi)**(beta-1.0) * np.exp(-zi/gamma) ) / \
                      ( Ho * ( OmegaM*(1.0+zi)**3. + OmegaL )**(1./2.) )
     zInt = quad(zfn,zlow,zhigh, epsabs=1.49e-12, epsrel=1.49e-12)
     
@@ -44,19 +44,19 @@ def dndlog10M(theta,log10Ms):
 
 def main():
 
-    pathToRuns = '../../runs/simpleModel/logNormLikeMstar6to10/'
+    pathToRuns = '../../runs/agnosticModel/logNormLikeMstar6to10/'
     nRuns=5
     simpleModelData = readPosterior.readPosterior(pathToRuns, nRuns=nRuns)
 
     # set up M range and write to file
     log10MRange = np.linspace(6.0, 11.0, 40)
-    writeMs = open('{}combined/ms.dat'.format(pathToRuns),'w')
+    writeMs = open('{}combined/ms_fix.dat'.format(pathToRuns),'w')
     for logM in log10MRange:
         writeMs.write('{}\n'.format(10.0**logM))
     writeMs.close()
 
     # place to write results 
-    writeLines = open('{}combined/mLines.dat'.format(pathToRuns),'w')    
+    writeLines = open('{}combined/mLines_fix.dat'.format(pathToRuns),'w')    
 
     # compute lines
     for i in range(len(simpleModelData)):

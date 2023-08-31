@@ -7,10 +7,38 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 
-import confBands 
+#import confBands 
 
 import matplotlib
 matplotlib.rcParams.update({'font.size': 15})
+
+
+def getPercentileLines(ms,data):
+
+    '''
+    compute the percentile lines for the plot
+    '''
+
+    n = len(ms)
+    p00p5,p05,p25,p50,p75,p95,p99p5 = np.zeros(n),\
+                                      np.zeros(n),\
+                                      np.zeros(n),\
+                                      np.zeros(n),\
+                                      np.zeros(n),\
+                                      np.zeros(n),\
+                                      np.zeros(n)
+    
+    for msi in range(len(ms)):
+        crossSection = data[:,msi]
+        p00p5[msi] = np.percentile(crossSection,   .5)
+        p05[msi]   = np.percentile(crossSection,  5. )
+        p25[msi]   = np.percentile(crossSection, 25. )
+        p50[msi]   = np.percentile(crossSection, 50. )
+        p75[msi]   = np.percentile(crossSection, 75. )
+        p95[msi]   = np.percentile(crossSection, 95. )
+        p99p5[msi] = np.percentile(crossSection, 99.5)
+        
+    return p00p5,p05,p25,p50,p75,p95,p99p5 
 
 
 
@@ -30,10 +58,11 @@ colGalExt=green
 colGal = 'k'
 
 simpModRunLoc = '../../runs/agnosticModel/logNormLikeMstar6to10/'
-simpModData = np.genfromtxt('{}combined/mLines.dat'.format(simpModRunLoc))
-simpModMs   = np.genfromtxt('{}combined/ms.dat'.format(simpModRunLoc))
+simpModData = np.genfromtxt('{}combined/mLines_fix.dat'.format(simpModRunLoc))
+simpModMs   = np.genfromtxt('{}combined/ms_fix.dat'.format(simpModRunLoc))
 
-_,p05,p25,p50,p75,p95,_ = confBands.getPercentiles(simpModMs,simpModData)
+
+_,p05,p25,p50,p75,p95,_ = getPercentileLines(simpModMs,simpModData)
 
 plt.fill_between(simpModMs,p05,p95,alpha=0.3,color=colSimp)
 plt.fill_between(simpModMs,p25,p75,alpha=0.3,color=colSimp)
@@ -45,7 +74,7 @@ galExtModData = np.genfromtxt('{}/m_lines.dat'.format(galExtModRunLoc))
 galExtModLogMs = np.genfromtxt('{}/mc.txt'.format(galExtModRunLoc))
 galExtModMs = [ 10.0**logM for logM in galExtModLogMs ]
 
-_,p05,p25,p50,p75,p95,_ = confBands.getPercentiles(galExtModMs,galExtModData)
+_,p05,p25,p50,p75,p95,_ = getPercentileLines(galExtModMs,galExtModData)
 
 plt.fill_between(galExtModMs,p05,p95,alpha=0.3,color=colGalExt)
 plt.fill_between(galExtModMs,p25,p75,alpha=0.3,color=colGalExt)
@@ -53,7 +82,7 @@ plt.plot(galExtModMs,p50,color=colGalExt,ls='--')
 
 
 galExtModPrior = np.genfromtxt('{}/m_linesprior.dat'.format(galExtModRunLoc))
-p00p5,_,_,_,_,_,p99p5 = confBands.getPercentiles(galExtModMs,galExtModPrior)
+p00p5,_,_,_,_,_,p99p5 = getPercentileLines(galExtModMs,galExtModPrior)
 plt.plot(galExtModMs, p00p5, color='k', alpha=0.7, ls=':')
 plt.plot(galExtModMs, p99p5, color='k', alpha=0.7, ls=':')
 
@@ -79,7 +108,7 @@ plt.plot(galModMs,p50,color=colGal,ls='--')
 
 
 
-plt.ylim(1E-9,1E6)
+plt.ylim(1E-9,1E3)
 plt.xlim(1E6,1E11)
 plt.yscale('log')
 plt.xscale('log')
